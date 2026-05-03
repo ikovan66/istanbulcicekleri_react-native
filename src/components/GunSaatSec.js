@@ -18,7 +18,7 @@ import stylesglobal from '../stylesglobal';
 import InsiderEvents from '../utils/InsiderHelper';
 import { urls } from '../config/apiUrls';
 import { colors } from '../config/theme';
-
+//test
 LocaleConfig.locales['tr'] = {
     monthNames: [
         'Ocak',
