@@ -180,10 +180,93 @@ const BasketView = ({ navigation }) => {
 
             // We check 'tarih' (if present) OR 'teslimsaat' which we are now populating with the full string.
             const slotString = item.teslimsaat || item.tarih;
+            if (!slotString) continue;
 
-            if (slotString && !checkTimeValidity(slotString)) {
+            let slotExpired = false;
+
+            // Step 1: API-based bugunpasif validation (same as Next.js)
+            try {
+                let bolgeId = item.bolge_id;
+                if (!bolgeId) {
+                    try {
+                        const storedMahalleItem = await AsyncStorage.getItem('@mahalleitem');
+                        if (storedMahalleItem) {
+                            const mahalleItem = JSON.parse(storedMahalleItem);
+                            bolgeId = mahalleItem.bolge_id;
+                        }
+                    } catch (e) { /* ignore */ }
+                }
+                const productId = item.urun_id || item.product_id;
+
+                if (bolgeId && productId) {
+                    // Get delivery availability (sonsaat, minteslimsure)
+                    const availRes = await axios.post(urls.teslimGunSayisi, {
+                        UretimSuresi: 0, Premium: 0,
+                        BolgeId: bolgeId, bayiUserName: '',
+                        PrID: productId,
+                    }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } });
+                    const availData = availRes.data;
+
+                    // sonsaat kontrolü
+                    const sonSaat = availData.sonsaat ?? 24;
+                    const currentHour = new Date().getHours();
+                    if (currentHour >= sonSaat) {
+                        slotExpired = true;
+                    }
+
+                    // bugunpasif kontrolü via teslimSaatleri API
+                    if (!slotExpired) {
+                        const bugunyoktur = currentHour >= sonSaat;
+                        const timesRes = await axios.post(urls.teslimSaatleri, {
+                            minteslimsure: availData.minteslimsure ?? 30,
+                            bugunyoktur,
+                            haftagun: false,
+                        }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } });
+                        const allSlots = [
+                            ...(timesRes.data.saatlerUcretsiz || []),
+                            ...(timesRes.data.saatlerUcretli || []),
+                        ];
+
+                        const cartSlotText = (slotString || '').replace(/\s/g, '');
+                        const matchingSlot = allSlots.find(s => {
+                            const apiSlotText = (s.metin || '').replace(/\s/g, '').replace(/\s*\/\s*/g, '-');
+                            return apiSlotText === cartSlotText;
+                        });
+
+                        if (matchingSlot) {
+                            // bugunpasif (server-side pasife_alma_saati)
+                            if (matchingSlot.bugunpasif) {
+                                console.warn('[ExpiredSlot] Slot bugunpasif=true for:', cartSlotText);
+                                slotExpired = true;
+                            }
+                            // tarih#deadline (client-side double check)
+                            if (!slotExpired && matchingSlot.tarih && matchingSlot.tarih.includes('#')) {
+                                const limitTimeStr = matchingSlot.tarih.split('#')[1]?.trim();
+                                if (limitTimeStr) {
+                                    const [h, m, s] = limitTimeStr.split(':').map(Number);
+                                    const limitDate = new Date();
+                                    limitDate.setHours(h, m, s || 0, 0);
+                                    if (new Date() > limitDate) {
+                                        console.warn('[ExpiredSlot] Slot tarih#deadline passed:', limitTimeStr);
+                                        slotExpired = true;
+                                    }
+                                }
+                            }
+                        } else {
+                            // No match found — slot no longer active
+                            console.warn('[ExpiredSlot] No matching slot in API for:', cartSlotText);
+                            slotExpired = true;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('[ExpiredSlot] API validation error:', e);
+            }
+
+            // Fallback: checkTimeValidity (uses start time when # is stripped)
+            if (slotExpired || !checkTimeValidity(slotString)) {
                 setExpiredItem(item);
-                await findNextAvailableSlot(item); // Await to ensure slot is fetched before showing modal
+                await findNextAvailableSlot(item);
                 setExpiredModalVisible(true);
                 return false;
             }
@@ -276,9 +359,12 @@ const BasketView = ({ navigation }) => {
             }
 
             // Step 2: Fetch slots
+            const sonSaatFindSlot = teslimgunsaybak.sonsaat ?? 24;
+            const currentHourFindSlot = new Date().getHours();
+            const bugunyokturFindSlot = currentHourFindSlot >= sonSaatFindSlot;
             const responsesaatler = await axios.post(urls.teslimSaatleri, {
-                minteslimsure: teslimgunsaybak.minteslimsure,
-                bayiUserName: '', bugunyoktur: false, haftagun: false
+                minteslimsure: teslimgunsaybak.minteslimsure ?? 30,
+                bayiUserName: '', bugunyoktur: bugunyokturFindSlot, haftagun: false
             }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } });
 
             const { saatlerUcretsiz } = responsesaatler.data;
@@ -320,11 +406,11 @@ const BasketView = ({ navigation }) => {
                 if (!slot.tarih || !slot.tarih.includes('#')) {
                     const timeRange = (slot.metin || '').split('-');
                     if (timeRange.length >= 2) {
-                        const endTimeStr = timeRange[1].trim();
-                        const [endHour, endMinute] = endTimeStr.split(':').map(Number);
-                        const endDate = new Date();
-                        endDate.setHours(endHour, endMinute, 0, 0);
-                        return now <= endDate;
+                        const startTimeStr = timeRange[0].trim();
+                        const [startHour, startMinute] = startTimeStr.split(':').map(Number);
+                        const startDate = new Date();
+                        startDate.setHours(startHour, startMinute, 0, 0);
+                        return now <= startDate;
                     }
                     return true;
                 }

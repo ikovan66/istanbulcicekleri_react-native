@@ -99,14 +99,23 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
     const [urunAlanlar, setUrunAlanlar] = useState([]);
     const [LevhaNot, setLevhaNot] = useState(null);
     const [specialDayTabs, setSpecialDayTabs] = useState([]);
+    const [cargoSettings, setCargoSettings] = useState({
+        cargoCalendarEnabled: false,
+        cargoCutoffWeekday: 16,
+        cargoCutoffSaturday: 15,
+        cargoSkipSunday: true,
+    });
 
-    // Fetch specialDayTabs from Next.js panel
+    // Fetch specialDayTabs + cargoSettings from Next.js panel
     const fetchSpecialDayTabs = async () => {
         try {
             const domain = API_CONFIG.universalDomain || API_CONFIG.webBaseUrl?.replace('https://', '').replace('http://', '');
             const res = await axios.get(`${API_CONFIG.webBaseUrl}/api/mobile/special-day-tabs?domain=${domain}`);
             if (res.data?.specialDayTabs) {
                 setSpecialDayTabs(res.data.specialDayTabs);
+            }
+            if (res.data?.cargoSettings) {
+                setCargoSettings(res.data.cargoSettings);
             }
         } catch (e) {
             console.log('specialDayTabs fetch error (non-critical):', e.message);
@@ -614,9 +623,88 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
                 if (teslimgunsaybak.kargolu) {
 
                     setTeslimSaatler([]);
-                    onCommand(bugun, 'undefined');
-
                     setkargouyartext(teslimgunsaybak.kargouyartext);
+
+                    if (cargoSettings.cargoCalendarEnabled) {
+                        const now = new Date();
+                        let daysToAdd = teslimgunsaybak.minteslimsure || 0;
+
+                        const cutoffHour = now.getDay() === 6
+                            ? cargoSettings.cargoCutoffSaturday
+                            : cargoSettings.cargoCutoffWeekday;
+                        if (now.getHours() >= cutoffHour) {
+                            daysToAdd += 1;
+                        }
+
+                        let cargoClosedDays = [];
+                        try {
+                            const closedRes = await axios.get(
+                                `${API_CONFIG.basketApi}/api/Home/gunKapatList`, {
+                                params: { bayiUserName: '', bayi_id: bayiID ?? 0 }
+                            });
+                            cargoClosedDays = Array.isArray(closedRes.data) ? closedRes.data : [];
+                            await setKapaliguns(cargoClosedDays);
+                        } catch (e) {
+                            console.error('Cargo closed days fetch error:', e);
+                        }
+
+                        const isClosedDay = (date) => {
+                            return cargoClosedDays.some(closed => {
+                                const closedDate = new Date(closed.gun);
+                                return closedDate.getFullYear() === date.getFullYear() &&
+                                    closedDate.getMonth() === date.getMonth() &&
+                                    closedDate.getDate() === date.getDate();
+                            });
+                        };
+
+                        const getNextValidDate = (startDate, days) => {
+                            const result = new Date(startDate);
+                            let added = 0;
+                            while (added < days) {
+                                result.setDate(result.getDate() + 1);
+                                if (cargoSettings.cargoSkipSunday && result.getDay() === 0) continue;
+                                if (isClosedDay(result)) continue;
+                                added++;
+                            }
+                            while ((cargoSettings.cargoSkipSunday && result.getDay() === 0) || isClosedDay(result)) {
+                                result.setDate(result.getDate() + 1);
+                            }
+                            return result;
+                        };
+
+                        let startDate = new Date();
+                        while ((cargoSettings.cargoSkipSunday && startDate.getDay() === 0) || isClosedDay(startDate)) {
+                            startDate.setDate(startDate.getDate() + 1);
+                        }
+
+                        let minDeliveryDate = daysToAdd === 0
+                            ? new Date(startDate)
+                            : getNextValidDate(startDate, daysToAdd);
+
+                        setgun1(minDeliveryDate);
+
+                        let day2 = new Date(minDeliveryDate);
+                        day2.setDate(day2.getDate() + 1);
+                        while ((cargoSettings.cargoSkipSunday && day2.getDay() === 0) || isClosedDay(day2)) {
+                            day2.setDate(day2.getDate() + 1);
+                        }
+                        setgun2(day2);
+
+                        let day3 = new Date(day2);
+                        day3.setDate(day3.getDate() + 1);
+                        while ((cargoSettings.cargoSkipSunday && day3.getDay() === 0) || isClosedDay(day3)) {
+                            day3.setDate(day3.getDate() + 1);
+                        }
+                        setgun3(day3);
+
+                        setsecilenGUN(minDeliveryDate);
+                        settabsec(1);
+                        setbugunNO(true);
+
+                        onCommand(minDeliveryDate, 'undefined');
+                    } else {
+                        onCommand(bugun, 'undefined');
+                    }
                 } else {
                     setkargouyartext('');
                     try {
@@ -831,7 +919,11 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
             // Sadece geçerli Date objesi ise set et
             if (tarih instanceof Date) {
                 setsecilenGUN(tarih);
-                //console.log('tarih1:' + tarih);
+                // Kargolu + cargoCalendarEnabled modda: saat seçimi yok,
+                // tab seçildiğinde direkt onCommand çağır
+                if (cargoSettings.cargoCalendarEnabled && (!teslimSaatler || teslimSaatler.length === 0)) {
+                    onCommand(tarih, 'undefined');
+                }
             }
         }
         settabsec(tabsay);
