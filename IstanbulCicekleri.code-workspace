@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../NEXT-JS/ikost-frontend-nj"
+		},
+		{
+			"path": "../netcore_api"
+		},
+		{
+			"path": "../Heryerbitki2024_eski"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}

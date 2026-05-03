@@ -1,0 +1,54 @@
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '13.4'
+prepare_react_native_project!
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => :static
+end
+
+target 'Tazecicek' do
+  config = use_native_modules!
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :hermes_enabled => true,
+    :fabric_enabled => false,
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  pod 'InsiderMobile'
+  # Firebase pods
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+
+  target 'TazecicekTests' do
+    inherit! :complete
+  end
+
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
+  end
+end
+
+# NOT: Insider notification extension'ları geçici olarak devre dışı
+# Rich push notifications olmadan çalışacak
+# Gerekirse aşağıdaki satırların yorumunu kaldırın:
+
+# target 'InsiderNotificationContent' do
+#   inherit! :search_paths
+#   pod 'InsiderMobileAdvancedNotification'
+# end
+
+# target 'InsiderNotificationService' do
+#   inherit! :search_paths
+#   pod 'InsiderMobileAdvancedNotification'
+# end

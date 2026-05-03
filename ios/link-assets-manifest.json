@@ -1,0 +1,41 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/KumbhSans-Bold.ttf",
+      "sha1": "88df244f4c37b57af391b5cbc6b913d078830a64"
+    },
+    {
+      "path": "assets/fonts/KumbhSans-Light.ttf",
+      "sha1": "5e31097dd10636b27ce4ab981f5537c7bf1bb09a"
+    },
+    {
+      "path": "assets/fonts/KumbhSans-Regular.ttf",
+      "sha1": "90bb97b1ab6e31b8a7dba48bfdbcee25681a8a77"
+    },
+    {
+      "path": "assets/fonts/PlayfairDisplay-Regular.ttf",
+      "sha1": "cde31cd8c30fca7e341fdecf73b3b7a9ed1b6afc"
+    },
+    {
+      "path": "assets/fonts/PlayfairDisplay-SemiBold.ttf",
+      "sha1": "b6a9d11602bf8a35fef0ead2b9e1a55e7e3c6d74"
+    },
+    {
+      "path": "assets/fonts/fa-brands-400.ttf",
+      "sha1": "d8b3568e9d8a1d3c01c85520eb9ca0b49b72815d"
+    },
+    {
+      "path": "assets/fonts/fa-regular-400.ttf",
+      "sha1": "2d7890e12afb77490112ec57fe47ca0688aebda2"
+    },
+    {
+      "path": "assets/fonts/fa-solid-900.ttf",
+      "sha1": "e9ace557c3aa403307f1e7a2cef1c035d522b94b"
+    },
+    {
+      "path": "assets/fonts/fa-v4compatibility.ttf",
+      "sha1": "321d89c65f1746f111341556bc62c7e217ad2544"
+    }
+  ]
+}

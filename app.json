@@ -1,0 +1,10 @@
+{
+  "name": "IstanbulCicekleri",
+  "displayName": "İstanbul Çiçekleri",
+  "expo": {
+    "slug": "istanbulcicekleri",
+    "name": "İstanbul Çiçekleri",
+    "sdkVersion": "51.0.0",
+    "entryPoint": ".vscode/exponentIndex.js"
+  }
+}

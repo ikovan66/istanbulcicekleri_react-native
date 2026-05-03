@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1051544251261",
+    "project_id": "istanbulcicekleri-notification",
+    "storage_bucket": "istanbulcicekleri-notification.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051544251261:android:0a0aeed7c7bd18c38fba14",
+        "android_client_info": {
+          "package_name": "com.istanbulcicekleri.mobileapp.istanbulCicekleri"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxn40bzwqGVj6Dsl9EPrYLh0fhDrujdI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

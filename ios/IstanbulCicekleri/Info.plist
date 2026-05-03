@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>İstanbul Çiçekleri</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>7.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.371501346518-q3uj48ebjcd1su9advrg2ev63kj8g3ja</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>insider</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>insideristanbulcicekleri</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.istanbulcicekleri.mobileapp.istanbulCicekleri</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>istanbulcicekleri</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1292041306118158</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FacebookAppID</key>
+	<string>1292041306118158</string>
+	<key>FacebookClientToken</key>
+	<string>e5577ec9d381d52898267f6964004033</string>
+	<key>FacebookDisplayName</key>
+	<string>ISTANBULCICEKLERI IOS APP</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Bu uygulama siparişe resim yükleyebilmeniz için kamera erişimi gerektiriyor.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Konumunuz, size en yakın mağazayı veya teslimat seçeneklerini sunmak için kullanılacaktır.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Konum bilginiz, size özel teslimat seçenekleri ve kampanyalar sunmak amacıyla kullanılacaktır.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Fotoğrafları galeriye kaydetmeniz için izin gereklidir.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Bu uygulama, siparişe resim yükleyebilmeniz için Fotoğraf Galerisine Erişim İzni gerektiriyor.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Size özel kampanyalar, ürün önerileri ve kişiselleştirilmiş deneyim sunmak için verilerinizi kullanıyoruz.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>KumbhSans-Regular.ttf</string>
+		<string>KumbhSans-Light.ttf</string>
+		<string>KumbhSans-Bold.ttf</string>
+		<string>PlayfairDisplay-Regular.ttf</string>
+		<string>PlayfairDisplay-SemiBold.ttf</string>
+		<string>PlayfairDisplay-SemiBold.ttf</string>
+		<string>fa-brands-400.ttf</string>
+		<string>fa-regular-400.ttf</string>
+		<string>fa-solid-900.ttf</string>
+		<string>fa-v4compatibility.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>BootSplash.storyboard</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+</dict>
+</plist>

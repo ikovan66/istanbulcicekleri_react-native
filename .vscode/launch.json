@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug iOS",
+            "program": "${workspaceFolder}/.vscode/launchReactNative.js",
+            "type": "reactnative",
+            "request": "launch",
+            "platform": "ios",
+            "cwd": "${workspaceFolder}",
+            "sourceMaps": true,
+            "outDir": "${workspaceFolder}/.vscode/.react",
+            "port": 8081,
+            "internalConsoleOptions": "openOnSessionStart",
+            "enableDebug": true,
+            "target": "82607778-4D8C-59B0-87BB-2EEA7265047C"
+        },
+        {
+            "name": "Attach to Hermes (iOS)",
+            "cwd": "${workspaceFolder}",
+            "type": "reactnativedirect",
+            "request": "attach",
+            "port": 8081
+        },
+        {
+            "name": "Attach to packager",
+            "type": "reactnative",
+            "request": "attach",
+            "cwd": "${workspaceFolder}",
+            "port": 8081,
+            "sourceMaps": true
+        },
+        {
+            "name": "Debug in Hermes Exponent - Experimental",
+            "cwd": "${workspaceFolder}",
+            "type": "reactnativedirect",
+            "request": "launch",
+            "platform": "exponent",
+            "isDynamic": true
+        }
+    ]
+}

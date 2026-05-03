@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Tablosu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #009879;
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .yogun-satacak {
+            background-color: #ffcccc; /* Red/Pink for High Sales */
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .orta-satacak {
+            background-color: #ffffcc; /* Yellow for Medium Sales */
+            color: #999900;
+            font-weight: bold;
+        }
+        .az-satar {
+            background-color: #ccffcc; /* Green for Low Sales */
+            color: #006600;
+            font-weight: bold;
+        }
+        .product-image {
+            width: 100px;
+            height: auto;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        a {
+            color: #009879;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Ürün Listesi</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ürün Adı</th>
+                <th>Kategori</th>
+                <th>Alt Kategori</th>
+                <th>Satış Beklentisi</th>
+                <th>Hazırlık Durumu</th>
+                <th>Link</th>
+                <th>Ürün Resmi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Row 1 -->
+            <tr>
+                <td>Ruby Touch Vazoda Kırmızı Gül</td>
+                <td>Vazo</td>
+                <td>Kırmızı Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/ruby-touch-vazoda-kirmizi-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/ruby-touch-vazoda-kirmizi-gul_500.jpg" alt="Ruby Touch Vazoda Kırmızı Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 2 -->
+            <tr>
+                <td>Mystical Lilac</td>
+                <td>Aranjman</td>
+                <td>Karma / Diğer</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/mystical-lilac" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/mystical-lilac_500.jpg" alt="Mystical Lilac" class="product-image"></td>
+            </tr>
+            <!-- Row 3 -->
+            <tr>
+                <td>Bold Passion Kırmızı Güller</td>
+                <td>Aranjman</td>
+                <td>Kırmızı Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/bold-passion-kirmizi-guller" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/bold-passion-kirmizi-guller_500.jpg" alt="Bold Passion Kırmızı Güller" class="product-image"></td>
+            </tr>
+            <!-- Row 4 -->
+            <tr>
+                <td>My Sweet Daisy Papatya</td>
+                <td>Aranjman</td>
+                <td>Papatya</td>
+                <td class="orta-satacak">Orta Satacak</td>
+                <td>Standart Hazırlık (Düzenli Stok)</td>
+                <td><a href="https://www.tazecicek.com/my-sweet-daisy" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/my-sweet-daisy_500.jpg" alt="My Sweet Daisy Papatya" class="product-image"></td>
+            </tr>
+            <!-- Row 5 -->
+            <tr>
+                <td>In Love 19 Premium Kırmızı Gül</td>
+                <td>Vazo</td>
+                <td>Kırmızı Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/in-love-19-premium-kirmizi-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/in-love-19-premium-kirmizi-gul_500.jpg" alt="In Love 19 Premium Kırmızı Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 6 -->
+            <tr>
+                <td>Classic Passion Vazoda Kırmızı Gül</td>
+                <td>Vazo</td>
+                <td>Kırmızı Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/classic-passion-vazoda-kirmizi-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/classic-passion-vazoda-kirmizi-gul_500.jpg" alt="Classic Passion Vazoda Kırmızı Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 7 -->
+            <tr>
+                <td>The Spring & Flower Press Çiçek Aranjmanı</td>
+                <td>Aranjman</td>
+                <td>Karma / Diğer</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/the-spring-flower-press" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/the-spring-flower-press_500.jpg" alt="The Spring & Flower Press Çiçek Aranjmanı" class="product-image"></td>
+            </tr>
+            <!-- Row 8 -->
+            <tr>
+                <td>Soft Lavender Lila Gül Buketi</td>
+                <td>Buket</td>
+                <td>Lila Gül</td>
+                <td class="orta-satacak">Orta Satacak</td>
+                <td>Standart Hazırlık (Düzenli Stok)</td>
+                <td><a href="https://www.tazecicek.com/soft-lavender-lila-gul-buketi" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/soft-lavender-lila-gul-buketi_500.jpg" alt="Soft Lavender Lila Gül Buketi" class="product-image"></td>
+            </tr>
+            <!-- Row 9 -->
+            <tr>
+                <td>This is Love Güller</td>
+                <td>Aranjman</td>
+                <td>Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/this-is-love-guller" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/this-is-love-guller_500.jpg" alt="This is Love Güller" class="product-image"></td>
+            </tr>
+            <!-- Row 10 -->
+            <tr>
+                <td>Red Dream Güller</td>
+                <td>Aranjman</td>
+                <td>Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/red-dream-guller" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/red-dream-guller_500.jpg" alt="Red Dream Güller" class="product-image"></td>
+            </tr>
+            <!-- Row 11 -->
+            <tr>
+                <td>Angel's Kiss 9 Beyaz Gül Buketi</td>
+                <td>Buket</td>
+                <td>Beyaz Gül</td>
+                <td class="orta-satacak">Orta Satacak</td>
+                <td>Standart Hazırlık (Düzenli Stok)</td>
+                <td><a href="https://www.tazecicek.com/angels-kiss-9-beyaz-gul-buketi" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/angels-kiss-9-beyaz-gul-buketi_500.jpg" alt="Angel's Kiss 9 Beyaz Gül Buketi" class="product-image"></td>
+            </tr>
+            <!-- Row 12 -->
+            <tr>
+                <td>Pure Days Papatya Vazosu</td>
+                <td>Vazo</td>
+                <td>Papatya</td>
+                <td class="orta-satacak">Orta Satacak</td>
+                <td>Standart Hazırlık (Düzenli Stok)</td>
+                <td><a href="https://www.tazecicek.com/pure-days-papatya-vazosu" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/pure-days-papatya-vazosu_500.jpg" alt="Pure Days Papatya Vazosu" class="product-image"></td>
+            </tr>
+            <!-- Row 13 -->
+            <tr>
+                <td>Poppy's Prank 3 Lila Gül</td>
+                <td>Aranjman</td>
+                <td>Lila Gül</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/poppys-prank-3-lila-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/poppys-prank-3-lila-gul_500.jpg" alt="Poppy's Prank 3 Lila Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 14 -->
+            <tr>
+                <td>Soft Citrus Vazoda Beyaz Gerberalar</td>
+                <td>Vazo</td>
+                <td>Gerbera</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/soft-citrus-vazoda-gerbera" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/soft-citrus-vazoda-gerbera_500.jpg" alt="Soft Citrus Vazoda Beyaz Gerberalar" class="product-image"></td>
+            </tr>
+            <!-- Row 15 -->
+            <tr>
+                <td>Pure Field Vazoda Beyaz Gül</td>
+                <td>Vazo</td>
+                <td>Beyaz Gül</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/pure-field-vazoda-beyaz-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/pure-field-vazoda-beyaz-gul_500.jpg" alt="Pure Field Vazoda Beyaz Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 16 -->
+            <tr>
+                <td>Scarlet Ritual Kırmızı Gül</td>
+                <td>Aranjman</td>
+                <td>Kırmızı Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/scarlet-ritual-kirmizi-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/scarlet-ritual-kirmizi-gul_500.jpg" alt="Scarlet Ritual Kırmızı Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 17 -->
+            <tr>
+                <td>Lime Touch Beyaz Gül Buketi</td>
+                <td>Buket</td>
+                <td>Beyaz Gül</td>
+                <td class="orta-satacak">Orta Satacak</td>
+                <td>Standart Hazırlık (Düzenli Stok)</td>
+                <td><a href="https://www.tazecicek.com/lime-touch-beyaz-gul-buketi" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/lime-touch-beyaz-gul-buketi_500.jpg" alt="Lime Touch Beyaz Gül Buketi" class="product-image"></td>
+            </tr>
+            <!-- Row 18 -->
+            <tr>
+                <td>Sweet Harmony Lila Gül</td>
+                <td>Aranjman</td>
+                <td>Lila Gül</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/sweet-harmony-lila-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/sweet-harmony-lila-gul_500.jpg" alt="Sweet Harmony Lila Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 19 -->
+            <tr>
+                <td>Coral Bloom Pembe Gerberalar</td>
+                <td>Aranjman</td>
+                <td>Gerbera</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/coral-bloom-pembe-gerberalar" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/coral-bloom-pembe-gerberalar_500.jpg" alt="Coral Bloom Pembe Gerberalar" class="product-image"></td>
+            </tr>
+            <!-- Row 20 -->
+            <tr>
+                <td>Citrus Melody Beyaz Gerberalar</td>
+                <td>Aranjman</td>
+                <td>Gerbera</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/citrus-melody-beyaz-gerberalar" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/citrus-melody-beyaz-gerberalar_500.jpg" alt="Citrus Melody Beyaz Gerberalar" class="product-image"></td>
+            </tr>
+            <!-- Row 21 -->
+            <tr>
+                <td>Peachy Dream Turuncu Gül</td>
+                <td>Aranjman</td>
+                <td>Gül</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/peachy-dream-turuncu-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/peachy-dream-turuncu-gul_500.jpg" alt="Peachy Dream Turuncu Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 22 -->
+            <tr>
+                <td>Sweet Love Güller</td>
+                <td>Aranjman</td>
+                <td>Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/sweet-love-guller" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/sweet-love-guller_500.jpg" alt="Sweet Love Güller" class="product-image"></td>
+            </tr>
+            <!-- Row 23 -->
+            <tr>
+                <td>Holiday Orange Roses</td>
+                <td>Aranjman</td>
+                <td>Karma / Diğer</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/holiday-orange-roses" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/holiday-orange-roses_500.jpg" alt="Holiday Orange Roses" class="product-image"></td>
+            </tr>
+            <!-- Row 24 -->
+            <tr>
+                <td>Heaven's Blossom 9 Kırmızı Gül Buketi</td>
+                <td>Buket</td>
+                <td>Kırmızı Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/heavens-blossom-kirmizi-gul-buketi" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/heavens-blossom-kirmizi-gul-buketi_500.jpg" alt="Heaven's Blossom 9 Kırmızı Gül Buketi" class="product-image"></td>
+            </tr>
+            <!-- Row 25 -->
+            <tr>
+                <td>Crystal Blossom 11 Beyaz Gül</td>
+                <td>Aranjman</td>
+                <td>Beyaz Gül</td>
+                <td class="az-satar">Az Satar</td>
+                <td>Sipariş Üzerine / Minimum Stok</td>
+                <td><a href="https://www.tazecicek.com/crystal-blossom-beyaz-gul" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/crystal-blossom-beyaz-gul_500.jpg" alt="Crystal Blossom 11 Beyaz Gül" class="product-image"></td>
+            </tr>
+            <!-- Row 26 -->
+            <tr>
+                <td>Peach Mood Lila Gül Buketi</td>
+                <td>Buket</td>
+                <td>Lila Gül</td>
+                <td class="orta-satacak">Orta Satacak</td>
+                <td>Standart Hazırlık (Düzenli Stok)</td>
+                <td><a href="https://www.tazecicek.com/peach-mood-lila-gul-buketi" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/peach-mood-lila-gul-buketi_500.jpg" alt="Peach Mood Lila Gül Buketi" class="product-image"></td>
+            </tr>
+            <!-- Row 27 -->
+            <tr>
+                <td>The Pure Passion 15 Kırmızı Gül Sepeti</td>
+                <td>Aranjman</td>
+                <td>Kırmızı Gül</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/the-pure-passion-kirmizi-gul-sepeti" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/the-pure-passion-kirmizi-gul-sepeti_500.jpg" alt="The Pure Passion 15 Kırmızı Gül Sepeti" class="product-image"></td>
+            </tr>
+            <!-- Row 28 -->
+            <tr>
+                <td>White Love Orkide</td>
+                <td>Bitki</td>
+                <td>Orkide</td>
+                <td class="yogun-satacak">Yoğun Satacak</td>
+                <td>Tam Kapasite Hazırlık (Stok+Personel Artır!)</td>
+                <td><a href="https://www.tazecicek.com/white-love-orkide" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/white-love-orkide_500.jpg" alt="White Love Orkide" class="product-image"></td>
+            </tr>
+            <!-- Row 29 -->
+            <tr>
+                <td>Sapphire Kiss Çiftli Mavi Orkide</td>
+                <td>Bitki</td>
+                <td>Orkide</td>
+                <td class="orta-satacak">Orta Satacak</td>
+                <td>Standart Hazırlık (Düzenli Stok)</td>
+                <td><a href="https://www.tazecicek.com/sapphire-kiss-ciftli-mavi-orkide" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/sapphire-kiss-ciftli-mavi-orkide_500.jpg" alt="Sapphire Kiss Çiftli Mavi Orkide" class="product-image"></td>
+            </tr>
+            <!-- Row 30 -->
+            <tr>
+                <td>Purple Charm 2 Dal Beyaz Orkide</td>
+                <td>Bitki</td>
+                <td>Orkide</td>
+                <td class="orta-satacak">Orta Satacak</td>
+                <td>Standart Hazırlık (Düzenli Stok)</td>
+                <td><a href="https://www.tazecicek.com/purple-charm-dal-beyaz-orkide" target="_blank">Link</a></td>
+                <td><img src="https://cdn.tazecicek.com/3052_B/urunler/purple-charm-dal-beyaz-orkide_500.jpg" alt="Purple Charm 2 Dal Beyaz Orkide" class="product-image"></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

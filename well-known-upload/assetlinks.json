@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.istanbulcicekleri.mobileapp.istanbulCicekleri",
+            "sha256_cert_fingerprints": [
+                "E2:FD:67:6F:AC:5C:B9:76:24:1E:66:3E:9E:B9:B1:37:71:BC:9B:02:64:CE:D4:08:D6:29:70:54:8C:30:56:D8"
+            ]
+        }
+    }
+]
