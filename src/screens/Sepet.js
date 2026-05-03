@@ -260,7 +260,7 @@ const BasketView = ({ navigation }) => {
                     }
                 }
             } catch (e) {
-                console.error('[ExpiredSlot] API validation error:', e);
+                console.warn('[ExpiredSlot] API validation skipped:', e.message);
             }
 
             // Fallback: checkTimeValidity (uses start time when # is stripped)
