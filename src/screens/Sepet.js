@@ -163,108 +163,14 @@ const BasketView = ({ navigation }) => {
     const validateCartItems = async () => {
         if (!sepetList || sepetList.length === 0) return true;
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize to start of day
-
         for (const item of sepetList) {
-            // Only validate time if delivery date is TODAY
-            if (item.teslimtarih) {
-                const deliveryDate = new Date(item.teslimtarih);
-                deliveryDate.setHours(0, 0, 0, 0); // Normalize to start of day
-
-                // Skip validation if delivery date is not today
-                if (deliveryDate.getTime() !== today.getTime()) {
-                    continue;
-                }
-            }
-
-            // We check 'tarih' (if present) OR 'teslimsaat' which we are now populating with the full string.
+            // Kargolu products have teslimsaat='undefined' — skip slot validation
             const slotString = item.teslimsaat || item.tarih;
-            if (!slotString) continue;
+            if (!slotString || slotString === 'undefined') continue;
 
-            let slotExpired = false;
-
-            // Step 1: API-based bugunpasif validation (same as Next.js)
-            try {
-                let bolgeId = item.bolge_id;
-                if (!bolgeId) {
-                    try {
-                        const storedMahalleItem = await AsyncStorage.getItem('@mahalleitem');
-                        if (storedMahalleItem) {
-                            const mahalleItem = JSON.parse(storedMahalleItem);
-                            bolgeId = mahalleItem.bolge_id;
-                        }
-                    } catch (e) { /* ignore */ }
-                }
-                const productId = item.urun_id || item.product_id;
-
-                if (bolgeId && productId) {
-                    // Get delivery availability (sonsaat, minteslimsure)
-                    const availRes = await axios.post(urls.teslimGunSayisi, {
-                        UretimSuresi: 0, Premium: 0,
-                        BolgeId: bolgeId, bayiUserName: '',
-                        PrID: productId,
-                    }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } });
-                    const availData = availRes.data;
-
-                    // sonsaat kontrolü
-                    const sonSaat = availData.sonsaat ?? 24;
-                    const currentHour = new Date().getHours();
-                    if (currentHour >= sonSaat) {
-                        slotExpired = true;
-                    }
-
-                    // bugunpasif kontrolü via teslimSaatleri API
-                    if (!slotExpired) {
-                        const bugunyoktur = currentHour >= sonSaat;
-                        const timesRes = await axios.post(urls.teslimSaatleri, {
-                            minteslimsure: availData.minteslimsure ?? 30,
-                            bugunyoktur,
-                            haftagun: false,
-                        }, { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } });
-                        const allSlots = [
-                            ...(timesRes.data.saatlerUcretsiz || []),
-                            ...(timesRes.data.saatlerUcretli || []),
-                        ];
-
-                        const cartSlotText = (slotString || '').replace(/\s/g, '');
-                        const matchingSlot = allSlots.find(s => {
-                            const apiSlotText = (s.metin || '').replace(/\s/g, '').replace(/\s*\/\s*/g, '-');
-                            return apiSlotText === cartSlotText;
-                        });
-
-                        if (matchingSlot) {
-                            // bugunpasif (server-side pasife_alma_saati)
-                            if (matchingSlot.bugunpasif) {
-                                console.warn('[ExpiredSlot] Slot bugunpasif=true for:', cartSlotText);
-                                slotExpired = true;
-                            }
-                            // tarih#deadline (client-side double check)
-                            if (!slotExpired && matchingSlot.tarih && matchingSlot.tarih.includes('#')) {
-                                const limitTimeStr = matchingSlot.tarih.split('#')[1]?.trim();
-                                if (limitTimeStr) {
-                                    const [h, m, s] = limitTimeStr.split(':').map(Number);
-                                    const limitDate = new Date();
-                                    limitDate.setHours(h, m, s || 0, 0);
-                                    if (new Date() > limitDate) {
-                                        console.warn('[ExpiredSlot] Slot tarih#deadline passed:', limitTimeStr);
-                                        slotExpired = true;
-                                    }
-                                }
-                            }
-                        } else {
-                            // No match found — slot no longer active
-                            console.warn('[ExpiredSlot] No matching slot in API for:', cartSlotText);
-                            slotExpired = true;
-                        }
-                    }
-                }
-            } catch (e) {
-                console.warn('[ExpiredSlot] API validation skipped:', e.message);
-            }
-
-            // Fallback: checkTimeValidity (uses start time when # is stripped)
-            if (slotExpired || !checkTimeValidity(slotString)) {
+            // Server-side computed expired flag (teslimtarih + sonsaatTIME < now)
+            if (item.isExpired === 1 || item.isExpired === true) {
+                console.warn('[ExpiredSlot] Server reports expired slot for item:', item.id, 'teslimsaat:', item.teslimsaat, 'sonsaatTIME:', item.sonsaatTIME);
                 setExpiredItem(item);
                 await findNextAvailableSlot(item);
                 setExpiredModalVisible(true);
