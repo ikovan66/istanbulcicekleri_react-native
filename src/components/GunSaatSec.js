@@ -99,6 +99,8 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
     const [urunAlanlar, setUrunAlanlar] = useState([]);
     const [LevhaNot, setLevhaNot] = useState(null);
     const [specialDayTabs, setSpecialDayTabs] = useState([]);
+    const [closedSpecialDayRedirect, setClosedSpecialDayRedirect] = useState(null);
+    const [showRedirectModal, setShowRedirectModal] = useState(false);
     const [cargoSettings, setCargoSettings] = useState({
         cargoCalendarEnabled: false,
         cargoCutoffWeekday: 16,
@@ -535,9 +537,15 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
             }
         });
 
-        if (gunkapali) {
+        const sdt = getCustomSpecialDay(selectedDate);
+        if (gunkapali && sdt) {
+            setClosedSpecialDayRedirect(sdt);
+            setShowRedirectModal(true);
+        } else if (gunkapali) {
             ikostalert("Bu tarih siparişe kapalıdır.", 'Lütfen başka bir gün seçiniz.', [{ text: 'TAMAM' }]);
             return;
+        } else {
+            setClosedSpecialDayRedirect(null);
         }
 
         setShowCalendar1(false);
@@ -638,11 +646,17 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
 
                         let cargoClosedDays = [];
                         try {
-                            const closedRes = await axios.get(
-                                `${API_CONFIG.basketApi}/api/Home/gunKapatList`, {
-                                params: { bayiUserName: '', bayi_id: bayiID ?? 0 }
-                            });
-                            cargoClosedDays = Array.isArray(closedRes.data) ? closedRes.data : [];
+                            const [closedRes, productClosedRes] = await Promise.all([
+                                axios.get(`${API_CONFIG.basketApi}/api/Home/gunKapatList`, {
+                                    params: { bayiUserName: '', bayi_id: bayiID ?? 0 }
+                                }),
+                                axios.get(`${API_CONFIG.basketApi}/api/Home/gunKapatListUrun`, {
+                                    params: { prID: pid }
+                                })
+                            ]);
+                            const bayiClosed = Array.isArray(closedRes.data) ? closedRes.data : [];
+                            const productClosed = Array.isArray(productClosedRes.data) ? productClosedRes.data : [];
+                            cargoClosedDays = [...bayiClosed, ...productClosed];
                             await setKapaliguns(cargoClosedDays);
                         } catch (e) {
                             console.error('Cargo closed days fetch error:', e);
@@ -733,19 +747,19 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
                     }
                 }
 
-                // gunKapatList axios isteği (GET metodu ile) 
+                // gunKapatList + gunKapatListUrun (bayi + ürün bazlı kapalı günler)
                 try {
-                    //console.log('bayiID:'+bayiID);
-                    const responsekapaligunler = await axios.get(
-                        `${API_CONFIG.basketApi}/api/Home/gunKapatList`, {
-                        params: {
-                            bayiUserName: '',
-                            bayi_id: bayiID ?? 0
-                        }
-                    }
-                    );
-                    kapaligunler = responsekapaligunler.data;
-                    //console.log('kapaligunler:', kapaligunler);
+                    const [responsekapaligunler, responseUrunKapali] = await Promise.all([
+                        axios.get(`${API_CONFIG.basketApi}/api/Home/gunKapatList`, {
+                            params: { bayiUserName: '', bayi_id: bayiID ?? 0 }
+                        }),
+                        axios.get(`${API_CONFIG.basketApi}/api/Home/gunKapatListUrun`, {
+                            params: { prID: pid }
+                        })
+                    ]);
+                    const bayiKapali = Array.isArray(responsekapaligunler.data) ? responsekapaligunler.data : [];
+                    const urunKapali = Array.isArray(responseUrunKapali.data) ? responseUrunKapali.data : [];
+                    kapaligunler = [...bayiKapali, ...urunKapali];
                     await setKapaliguns(kapaligunler);
                 } catch (error) {
                     if (error.response) {
@@ -818,13 +832,6 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
 
             if (i == 0 && bugunyok) continue;
 
-            let gunkapali = false;
-            kapaligunler.forEach((item) => {
-                if (new Date(item.gun).toDateString() == tarih.toDateString()) gunkapali = true;
-            });
-
-            if (gunkapali) continue;
-
             // Check old API special days
             let isSpecialIdx = -1;
             ozelgunler.forEach((item, index) => {
@@ -837,11 +844,20 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
             const customSD = getCustomSpecialDay(tarih);
             const isSpecial = isSpecialIdx !== -1 || !!customSD;
 
+            let gunkapali = false;
+            kapaligunler.forEach((item) => {
+                if (new Date(item.gun).toDateString() == tarih.toDateString()) gunkapali = true;
+            });
+
+            // If closed but NOT a custom special day, skip
+            if (gunkapali && !customSD) continue;
+
             candidateDates.push({
                 date: tarih,
                 isSpecial: isSpecial,
                 specialData: isSpecialIdx !== -1 ? ozelgunler[isSpecialIdx] : null,
-                customSpecialDay: customSD || null
+                customSpecialDay: customSD || null,
+                isClosedSpecialDay: (gunkapali && !!customSD)
             });
         }
 
@@ -861,12 +877,13 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
                 kapaligunler.forEach((item) => {
                     if (new Date(item.gun).toDateString() == sdDate.toDateString()) gunkapali = true;
                 });
-                if (gunkapali) return;
+                
                 candidateDates.push({
                     date: sdDate,
                     isSpecial: true,
                     specialData: null,
-                    customSpecialDay: sdt
+                    customSpecialDay: sdt,
+                    isClosedSpecialDay: gunkapali
                 });
             });
             // Re-sort after adding
@@ -918,6 +935,23 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
             setShowCalendar1(false);
             // Sadece geçerli Date objesi ise set et
             if (tarih instanceof Date) {
+                let gunkapali = false;
+                kapaliguns.forEach((item) => {
+                    if (new Date(item.gun).toDateString() == tarih.toDateString()) {
+                        gunkapali = true;
+                    }
+                });
+                const sdt = getCustomSpecialDay(tarih);
+                if (gunkapali && sdt) {
+                    setClosedSpecialDayRedirect(sdt);
+                    setShowRedirectModal(true);
+                } else if (gunkapali) {
+                    ikostalert("Bu tarih siparişe kapalıdır.", 'Lütfen başka bir gün seçiniz.', [{ text: 'TAMAM' }]);
+                    return;
+                } else {
+                    setClosedSpecialDayRedirect(null);
+                }
+
                 setsecilenGUN(tarih);
                 // Kargolu + cargoCalendarEnabled modda: saat seçimi yok,
                 // tab seçildiğinde direkt onCommand çağır
@@ -1274,7 +1308,21 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
             ></KisiyeOzel>}
 
             {(secilenGUN || kargouyartext) && <View style={{ padding: 30 }} >
-                <IkostButton title="Devam" onPress={() => sepeteekle()}></IkostButton>
+                {closedSpecialDayRedirect ? (
+                    <View style={{ backgroundColor: '#FFF5F5', borderRadius: 8, padding: 15, borderWidth: 1, borderColor: '#ffcdd2', alignItems: 'center' }}>
+                        <Text style={{ color: '#d32f2f', fontSize: 13, textAlign: 'center', marginBottom: 10, fontFamily: 'NunitoSans-Bold' }}>
+                            {closedSpecialDayRedirect.kapaliYonlendirmeMetni || "Seçtiğiniz ürün bu özel günde gönderime kapalıdır. Alternatif ürünlerimize göz atabilirsiniz."}
+                        </Text>
+                        {closedSpecialDayRedirect.yonlendirmeButonLinki && (
+                            <TouchableOpacity onPress={() => navigation.navigate('Home')} style={{ backgroundColor: '#e91e63', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 6 }}>
+                                <Text style={{ color: 'white', fontWeight: 'bold' }}>{closedSpecialDayRedirect.yonlendirmeButonYazisi || "Alternatifleri Gör"}</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                ) : (
+                    <IkostButton title="Devam" onPress={() => sepeteekle()}></IkostButton>
+                )}
+                
                 <View style={{
                     marginTop: 25,
                     backgroundColor: colors.bgLight,
@@ -1315,6 +1363,31 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
             </View>}
         </View>
 
+        {showRedirectModal && closedSpecialDayRedirect && (
+            <View style={[StyleSheet.absoluteFillObject, { backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', zIndex: 9999, elevation: 10 }]}>
+                <View style={{ backgroundColor: 'white', width: '85%', borderRadius: 16, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 5}, shadowOpacity: 0.3, shadowRadius: 10, elevation: 15 }}>
+                    {closedSpecialDayRedirect.icon ? (
+                        <Image source={{uri: closedSpecialDayRedirect.icon}} style={{width: 64, height: 64, marginBottom: 15}} resizeMode="contain" />
+                    ) : (
+                        <Text style={{fontSize: 48, marginBottom: 15}}>ℹ️</Text>
+                    )}
+                    <Text style={{ fontSize: 18, fontFamily: 'NunitoSans-Bold', marginBottom: 15, textAlign: 'center', color: '#111' }}>
+                        {closedSpecialDayRedirect.name || "Özel Gün"}
+                    </Text>
+                    <Text style={{ fontSize: 14, fontFamily: 'NunitoSans-Regular', marginBottom: 20, textAlign: 'center', color: '#555', lineHeight: 20 }}>
+                        {closedSpecialDayRedirect.kapaliYonlendirmeMetni || "Seçtiğiniz ürün bu özel günde gönderime kapalıdır. Alternatif ürünlerimize göz atabilirsiniz."}
+                    </Text>
+                    {closedSpecialDayRedirect.yonlendirmeButonLinki && (
+                        <TouchableOpacity onPress={() => { setShowRedirectModal(false); navigation.navigate('Home'); }} style={{ backgroundColor: '#e91e63', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 8, width: '100%', alignItems: 'center', marginBottom: 10 }}>
+                            <Text style={{ color: 'white', fontFamily: 'NunitoSans-Bold', fontSize: 15 }}>{closedSpecialDayRedirect.yonlendirmeButonYazisi || "Alternatifleri Gör"}</Text>
+                        </TouchableOpacity>
+                    )}
+                    <TouchableOpacity onPress={() => setShowRedirectModal(false)} style={{ padding: 10, width: '100%', alignItems: 'center' }}>
+                        <Text style={{ color: '#888', fontFamily: 'NunitoSans-Bold', fontSize: 14 }}>Kapat</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )}
 
     </>
     )
