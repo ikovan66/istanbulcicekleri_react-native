@@ -20,7 +20,7 @@ import {
   StyleSheet,
   Animated, Dimensions,
   PanResponder,
-
+  Linking
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
@@ -148,6 +148,7 @@ const UrunSayfa = () => {
   const [sheetVisible, setSheetVisible] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(true);
   const [urunKapaliTarihler, setUrunKapaliTarihler] = useState([]);
+  const [staticClosedBanner, setStaticClosedBanner] = useState(null);
 
   const handleMahallesectim = async (item) => {
     // Context controls the mahalle item. Here we just reset dependent states.
@@ -340,14 +341,54 @@ const UrunSayfa = () => {
     getproduct();
     // getkargoIndirimLimit();
 
-    // gunKapatListUrun API - ürünün kapalı tarihleri
-    axios.get(urls.gunKapatListUrun, {
-      params: { prID: pid }
-    }).then(res => {
-      setUrunKapaliTarihler(res.data || []);
+    // gunKapatListUrun API - ürünün kapalı tarihleri ve special day kontrolü
+    Promise.all([
+      axios.get(urls.gunKapatListUrun, { params: { prID: pid } }),
+      axios.get(`${API_CONFIG.webBaseUrl}/api/delivery/cargo-settings`)
+    ]).then(([kapaliRes, settingsRes]) => {
+      const kapaliData = kapaliRes.data || [];
+      setUrunKapaliTarihler(kapaliData);
+      
+      const specialDayTabs = settingsRes.data?.specialDayTabs || [];
+      if (kapaliData.length > 0 && specialDayTabs.length > 0) {
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+
+        const closedSpecialDay = specialDayTabs.find(sdt => {
+          if (!sdt.date) return false;
+          const sdDate = new Date(sdt.date + 'T00:00:00');
+          if (sdDate < todayStart) return false;
+
+          if (sdt.publishDate) {
+            const pubDate = new Date(sdt.publishDate + 'T00:00:00');
+            if (todayStart < pubDate) return false;
+          }
+
+          const isClosedForProduct = kapaliData.some(closed => {
+            const closedDate = new Date(closed.gun);
+            return closedDate.getFullYear() === sdDate.getFullYear() &&
+                   closedDate.getMonth() === sdDate.getMonth() &&
+                   closedDate.getDate() === sdDate.getDate();
+          });
+
+          return isClosedForProduct;
+        });
+
+        if (closedSpecialDay) {
+          const localeKey = language ? String(language).toLowerCase() : 'tr';
+          let finalSdt = { ...closedSpecialDay };
+          if (localeKey !== 'tr' && closedSpecialDay.locales && closedSpecialDay.locales[localeKey]) {
+            finalSdt = { ...finalSdt, ...closedSpecialDay.locales[localeKey] };
+          }
+          setStaticClosedBanner(finalSdt);
+        } else {
+          setStaticClosedBanner(null);
+        }
+      }
     }).catch(err => {
       console.log('gunKapatListUrun error:', err);
       setUrunKapaliTarihler([]);
+      setStaticClosedBanner(null);
     });
 
   }, [pid, secilenMahItem]); // navigation'ı bağımlılıklara eklemeyi unutmayın
@@ -928,53 +969,53 @@ const UrunSayfa = () => {
               </View>
             </View>
           )}
-          {5==6 && !sepetactionOK && urunKapaliTarihler.length > 1 && (
+          {!sepetactionOK && staticClosedBanner && (
             <View style={{
-              backgroundColor: '#fce4ec',
-              borderRadius: 12,
+              backgroundColor: '#fff5f5',
+              borderRadius: 8,
               marginHorizontal: 10,
               marginBottom: 10,
-              padding: 14,
+              padding: 12,
               borderWidth: 1,
-              borderColor: '#f8bbd0',
+              borderColor: '#ffcdd2',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap'
             }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-                <Image
-                  source={{ uri: `${API_CONFIG.webBaseUrl}/ozelgun/kapatgun.png` }}
-                  style={{ width: 52, height: 52, borderRadius: 8, marginRight: 12 }}
-                />
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontFamily: 'NunitoSans-Bold',
-                    fontSize: 14,
-                    color: '#c62828',
-                    marginBottom: 2,
-                  }}>
-                    {urunKapaliTarihler[0]?.ozelyazi || 'Bu ürün geçici olarak kapalı!'}
+              <Text style={{
+                fontFamily: 'NunitoSans-Bold',
+                fontSize: 14,
+                color: '#d32f2f',
+                flex: 1,
+                minWidth: 200,
+                marginBottom: 8
+              }}>
+                {staticClosedBanner.kapaliYonlendirmeMetni || translate("Seçtiğiniz ürün bu özel günde gönderime kapalıdır. Alternatif ürünlerimize göz atabilirsiniz.")}
+              </Text>
+              {staticClosedBanner.yonlendirmeButonLinki && (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#e74c3c',
+                    borderRadius: 6,
+                    paddingVertical: 8,
+                    paddingHorizontal: 16,
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}
+                  onPress={() => {
+                    // Buton linkine göre yönlendirme yapalım (RN'de linking veya navigation kullanılabilir)
+                    // Örnek basit link açma
+                    Linking.openURL(staticClosedBanner.yonlendirmeButonLinki).catch(err => console.error("Couldn't load page", err));
+                  }}
+                >
+                  <Text style={{ color: 'white', fontFamily: 'NunitoSans-Bold', fontSize: 13 }}>
+                    {staticClosedBanner.yonlendirmeButonYazisi || translate("Alternatifleri Gör")}
                   </Text>
-                </View>
-              </View>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#e74c3c',
-                  borderRadius: 8,
-                  paddingVertical: 12,
-                  paddingHorizontal: 20,
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}
-                onPress={() => navigation.navigate('KategoriNav', { cid: 1275, title: 'Sevgililer Günü Kolleksiyonu' })}
-              >
-                <Text style={{
-                  color: 'white',
-                  fontFamily: 'NunitoSans-Bold',
-                  fontSize: 15,
-                }}>
-                  Sevgililer Günü Kolleksiyonunu Keşfet
-                </Text>
-                <Text style={{ color: 'white', fontSize: 18, marginLeft: 6 }}>›</Text>
-              </TouchableOpacity>
+                  <Text style={{ color: 'white', fontSize: 16, marginLeft: 6 }}>›</Text>
+                </TouchableOpacity>
+              )}
             </View>
           )}
           {sepetactionOK && (

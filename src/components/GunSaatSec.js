@@ -541,6 +541,7 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
         if (gunkapali && sdt) {
             setClosedSpecialDayRedirect(sdt);
             setShowRedirectModal(true);
+            return;
         } else if (gunkapali) {
             ikostalert("Bu tarih siparişe kapalıdır.", 'Lütfen başka bir gün seçiniz.', [{ text: 'TAMAM' }]);
             return;
@@ -945,6 +946,7 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
                 if (gunkapali && sdt) {
                     setClosedSpecialDayRedirect(sdt);
                     setShowRedirectModal(true);
+                    return;
                 } else if (gunkapali) {
                     ikostalert("Bu tarih siparişe kapalıdır.", 'Lütfen başka bir gün seçiniz.', [{ text: 'TAMAM' }]);
                     return;
@@ -1366,10 +1368,8 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
         {showRedirectModal && closedSpecialDayRedirect && (
             <View style={[StyleSheet.absoluteFillObject, { backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', zIndex: 9999, elevation: 10 }]}>
                 <View style={{ backgroundColor: 'white', width: '85%', borderRadius: 16, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 5}, shadowOpacity: 0.3, shadowRadius: 10, elevation: 15 }}>
-                    {closedSpecialDayRedirect.icon ? (
+                    {closedSpecialDayRedirect.icon && (
                         <Image source={{uri: closedSpecialDayRedirect.icon}} style={{width: 64, height: 64, marginBottom: 15}} resizeMode="contain" />
-                    ) : (
-                        <Text style={{fontSize: 48, marginBottom: 15}}>ℹ️</Text>
                     )}
                     <Text style={{ fontSize: 18, fontFamily: 'NunitoSans-Bold', marginBottom: 15, textAlign: 'center', color: '#111' }}>
                         {closedSpecialDayRedirect.name || "Özel Gün"}
