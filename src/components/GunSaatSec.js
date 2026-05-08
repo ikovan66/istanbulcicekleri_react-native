@@ -145,8 +145,30 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
 
     useEffect(() => {
         if (!mounted && gun1 instanceof Date) {
-            setsecilenGUN(gun1);
-            console.log('gun1:' + gun1);
+            // Ürün tarihi kapalıysa ilk günü otomatik seçme, sonraki açık günü bul
+            const isGunClosed = (gunDate) => {
+                if (!gunDate || !(gunDate instanceof Date)) return false;
+                return kapaliguns.some(item => 
+                    new Date(item.gun).toDateString() === gunDate.toDateString()
+                );
+            };
+
+            if (!isGunClosed(gun1)) {
+                setsecilenGUN(gun1);
+                settabsec(1);
+                console.log('gun1 (auto-select):' + gun1);
+            } else if (gun2 instanceof Date && !isGunClosed(gun2)) {
+                setsecilenGUN(gun2);
+                settabsec(2);
+                console.log('gun1 kapalı, gun2 seçildi:' + gun2);
+            } else if (gun3 instanceof Date && !isGunClosed(gun3)) {
+                setsecilenGUN(gun3);
+                settabsec(3);
+                console.log('gun1,gun2 kapalı, gun3 seçildi:' + gun3);
+            } else {
+                // Tüm günler kapalı - seçim yapma
+                console.log('Tüm günler ürün için kapalı, otomatik seçim yapılmadı');
+            }
 
             setmounted(true);
         }
