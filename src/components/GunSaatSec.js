@@ -1417,8 +1417,6 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
                 </ScrollView>
             </View>}
 
-            {/* Slot Urgency Countdown Banner */}
-            {secilenGUN && <SlotUrgencyBanner />}
 
             {urunAlanlar.length > 0 && <KisiyeOzel fv={formValues} ua={urunAlanlar}
                 onSubmit={(values) => setLevhaNot(values)}
@@ -1439,6 +1437,9 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
                 ) : (
                     <IkostButton title="Devam" onPress={() => sepeteekle()}></IkostButton>
                 )}
+
+                {/* Slot Urgency Countdown Banner */}
+                <SlotUrgencyBanner />
                 
                 <View style={{
                     marginTop: 25,
