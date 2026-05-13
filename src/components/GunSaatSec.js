@@ -1129,7 +1129,7 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
 
         const remainingMs = limitDate.getTime() - now.getTime();
         const remainingMin = Math.ceil(remainingMs / 60000);
-        if (remainingMin <= 0) return null;
+        if (remainingMin <= 0 || remainingMin >= 60) return null;
 
         let timeText;
         if (remainingMin >= 60) {
