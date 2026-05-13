@@ -1088,6 +1088,96 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
         );
     };
 
+    // ===== Slot Urgency Countdown Banner =====
+    const SlotUrgencyBanner = () => {
+        if (!secilenGUN || !(secilenGUN instanceof Date)) return null;
+        if (!tarihKarsilastirma(secilenGUN, bugun)) return null;
+        if (!secilenSAAT || !teslimSaatler || teslimSaatler.length === 0) return null;
+
+        const selectedSlot = teslimSaatler.find(s => s.metin === secilenSAAT);
+        if (!selectedSlot) return null;
+
+        const metinParts = (selectedSlot.metin || '').split('-');
+        if (metinParts.length < 2) return null;
+        const endTimeStr = metinParts[metinParts.length - 1].trim();
+        const [endH, endM] = endTimeStr.split(':').map(Number);
+        if (isNaN(endH)) return null;
+
+        let limitH, limitM;
+        if (selectedSlot.tarih && selectedSlot.tarih.includes('#')) {
+            const limitStr = selectedSlot.tarih.split('#')[1]?.trim();
+            if (limitStr) {
+                const lp = limitStr.split(':').map(Number);
+                limitH = lp[0];
+                limitM = lp[1] || 0;
+            }
+        }
+        if (limitH == null) {
+            const startStr = metinParts[0].trim();
+            const [sH, sM] = startStr.split(':').map(Number);
+            if (!isNaN(sH)) {
+                limitH = sH;
+                limitM = sM || 0;
+            } else {
+                return null;
+            }
+        }
+
+        const now = new Date();
+        const limitDate = new Date();
+        limitDate.setHours(limitH, limitM, 0, 0);
+
+        const remainingMs = limitDate.getTime() - now.getTime();
+        const remainingMin = Math.ceil(remainingMs / 60000);
+        if (remainingMin <= 0) return null;
+
+        let timeText;
+        if (remainingMin >= 60) {
+            const hours = Math.floor(remainingMin / 60);
+            const mins = remainingMin % 60;
+            timeText = mins > 0
+                ? `${hours} ${translate('saat')} ${mins} ${translate('dakika')}`
+                : `${hours} ${translate('saat')}`;
+        } else {
+            timeText = `${remainingMin} ${translate('dakika')}`;
+        }
+
+        const totalWindowMin = 120;
+        const progress = Math.max(0, Math.min(1, remainingMin / totalWindowMin));
+        const isLow = remainingMin <= 30;
+
+        const endTimeFormatted = `${String(endH).padStart(2, '0')}:${String(endM || 0).padStart(2, '0')}`;
+        const limitTimeFormatted = `${String(limitH).padStart(2, '0')}:${String(limitM).padStart(2, '0')}`;
+
+        return (
+            <View style={{
+                marginHorizontal: 7, marginTop: 8, padding: 14,
+                backgroundColor: '#fff9ed', borderRadius: 10,
+                borderWidth: 2, borderColor: '#fff3d7',
+                borderLeftWidth: 4, borderLeftColor: '#F9A825',
+            }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 18, marginRight: 8 }}>⏱</Text>
+                    <Text style={{ fontSize: 14, fontFamily: 'NunitoSans-Bold', color: '#333', flex: 1 }}>
+                        {endTimeFormatted}'{translate('a kadar teslimat için son')} {timeText}
+                    </Text>
+                </View>
+                <View style={{
+                    width: '100%', height: 6, backgroundColor: '#E0E0E0',
+                    borderRadius: 3, overflow: 'hidden', marginBottom: 10,
+                }}>
+                    <View style={{
+                        height: '100%', width: `${progress * 100}%`,
+                        borderRadius: 3, backgroundColor: isLow ? '#E65100' : '#1565C0',
+                    }} />
+                </View>
+                <Text style={{ fontSize: 12, fontFamily: 'NunitoSans-Regular', color: '#666', lineHeight: 16 }}>
+                    {translate('Siparişinizi')} {limitTimeFormatted}'{translate('a kadar verin, bugün')} {endTimeFormatted}'{translate('a kadar teslim edelim.')}
+                </Text>
+            </View>
+        );
+    };
+
     const getMarkedDates = (kapaliguns, ozelguns) => {
 
         var arrayOfKAPALIDates = [];
@@ -1326,6 +1416,9 @@ const GunSaatSec = ({ item, pid, cid, birliktelist, onCommand, onBayiIdResolved,
                     })}
                 </ScrollView>
             </View>}
+
+            {/* Slot Urgency Countdown Banner */}
+            {secilenGUN && <SlotUrgencyBanner />}
 
             {urunAlanlar.length > 0 && <KisiyeOzel fv={formValues} ua={urunAlanlar}
                 onSubmit={(values) => setLevhaNot(values)}
