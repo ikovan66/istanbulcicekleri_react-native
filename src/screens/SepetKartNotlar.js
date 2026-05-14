@@ -24,6 +24,7 @@ import HeaderleftComp from '../components/HeaderleftComp';
 import LottieView from 'lottie-react-native';
 import { ikostalert } from '../GlobalAlert';
 import { colors } from '../config/theme';
+import UserCoupons from '../components/UserCoupons';
 
 
 
@@ -366,6 +367,20 @@ const SepetKartNotlar = ({ navigation }) => {
                                         </View>
                                     </TouchableOpacity>
                                 </View>}
+                                {!indirim && <UserCoupons
+                                    indirim={indirim}
+                                    onApply={async (couponCode) => {
+                                        setDiscountCode(couponCode);
+                                        var url = `${Url}sepetindirim/` + Code + `_` + couponCode + `/`;
+                                        const response = await axios.get(url);
+                                        if (response.data == "tamam") {
+                                            await SepeteUpdateKargo();
+                                            verial();
+                                        } else {
+                                            ikostalert("HATA", response.data, [{ text: 'TAMAM' }]);
+                                        }
+                                    }}
+                                />}
                                 {indirim && <View style={{ flex: 1, justifyContent: 'left', flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
                                     <Text style={{ fontSize: 11, fontWeight: 'bold', marginBottom: 5, fontFamily: 'NunitoSans-Regular', color: colors.textSecondary }}>İndirim: </Text>
                                     <Text style={{ fontSize: 16, marginBottom: 5, fontFamily: 'NunitoSans-Regular', }}>-{indirim.replace('.', ',')}</Text>
