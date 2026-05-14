@@ -669,7 +669,7 @@
 				CODE_SIGN_ENTITLEMENTS = IstanbulCicekleri/RibbonflowersDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.4;
+				CURRENT_PROJECT_VERSION = 2.5;
 				DEVELOPMENT_TEAM = 95NZ98RP2G;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = IstanbulCicekleri/Info.plist;
@@ -680,7 +680,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4;
+				MARKETING_VERSION = 2.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -709,7 +709,7 @@
 				CODE_SIGN_ENTITLEMENTS = IstanbulCicekleri/IstanbulCicekleriRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.4;
+				CURRENT_PROJECT_VERSION = 2.5;
 				DEVELOPMENT_TEAM = 95NZ98RP2G;
 				INFOPLIST_FILE = IstanbulCicekleri/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = IstanbulCicekleri;
@@ -719,7 +719,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4;
+				MARKETING_VERSION = 2.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
